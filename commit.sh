@@ -1,8 +1,13 @@
 #!/bin/sh
+# 
+# commit.sh
+#
+# Copyright (C) 2015 Kenju - All Rights Reserved
+# https://github.com/KENJU/git_shellscript 
 
-# add all files in the current directory
+# add
 git add -A
 
-# read commit message
+# commit
 read -p "Commit message: " commitMessage
 git commit -m "$commitMessage"

@@ -1,6 +1,6 @@
 #!/bin/sh
 # 
-# add.sh
+# build.sh
 #
 # Copyright (C) 2015 Kenju - All Rights Reserved
 # https://github.com/KENJU/git_shellscript 
@@ -33,3 +33,9 @@ esac
 
 # push
 git push
+
+# build
+git checkout gh-pages
+git rebase master
+git push origin gh-pages
+git checkout master
