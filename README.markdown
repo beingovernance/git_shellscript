@@ -18,6 +18,7 @@ $ chmod u+x init.sh
 - commit.sh
 - push.sh
 - build.sh
+- github.sh
 
 
 ### init.sh
@@ -134,5 +135,40 @@ git checkout gh-pages
 git rebase master
 git push origin gh-pages
 git checkout master
+
+```
+
+### github.sh
+
+- create a new repo in Github
+- git init yoru current directory
+- git push to the newly created repo
+
+```sh
+
+read -p "Enter your Github username: " username
+read -p "Enter your new repository name: " reponame
+curl -u $username https://api.github.com/user/repos -d '{"name":"'$reponame'"}'
+
+touch README.md
+
+git init
+git add -A
+git commit -m "first commit"
+git remote rm origin
+git remote add origin https://github.com/$username/$reponame.git
+git push -u origin master
+
+read -p "Do you want to open the new repo page in browser?(y/n): " answer
+
+case $answer in
+  y)
+	open https://github.com/$username/$reponame
+    ;;
+  n)
+    ;;
+  *)
+    ;;
+esac
 
 ```
