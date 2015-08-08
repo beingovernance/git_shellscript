@@ -23,7 +23,13 @@ fi
 repo_name=`basename $(git rev-parse --show-toplevel)`
 
 # list all issue
-curl -i https://api.github.com/repos/KENJU/$repo_name/issues | grep 'title'| sed s/\"title\"://g
+curl -i https://api.github.com/repos/$username/$repo_name/issues > issues.txt
+awk '/title/{print $2}' issues.txt > tmp1.txt
+awk '/number/{print $2}' issues.txt > tmp2.txt
+paste -d":" tmp1.txt tmp2.txt
+
+curl -i https://api.github.com/repos/$username/$repo_name/issues | grep 'title'| sed s/\"title\"://g
+curl -i https://api.github.com/repos/$username/$repo_name/issues | grep 'number'| sed s/\"number\"://g
 
 ###################
 # create an issue
