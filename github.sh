@@ -34,9 +34,15 @@ esac
 
 # create repo
 echo "Creating Github repository '$reponame' ..."
+
 read -p "Do you want to make it private?(y/n)" answer_private
+read -p "Repository Description: " description
+read -p "Do you want to add MIT LICENSE template?(y/n)" answer_license
+
 [ $answer_private == y ] && private=true || private=false
-curl -u $username https://api.github.com/user/repos -d '{"name":"'$reponame'", "private":"'$private'"}'
+[ $answer_license == y ] && license_template="mit" || license_template="unlicense"
+
+curl -u $username https://api.github.com/user/repos -d '{"name":"'$reponame'", "description":"'$description'", "private":"'$private'", "license_template":"'$license_template'"}'
 echo " done."
 
 # create empty README.md
