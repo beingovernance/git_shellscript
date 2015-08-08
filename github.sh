@@ -7,21 +7,21 @@
 # https://github.com/KENJU/git_shellscript 
 
 # read from command line
-read -p "Enter your Github username: " username
+# read -p "Enter your Github username: " username
 read -p "Enter your new repository name: " reponame
 
 # create repo
-echo -n "Creating Github repository '$reponame' ..."
+echo "Creating Github repository '$reponame' ..."
 curl -u $username https://api.github.com/user/repos -d '{"name":"'$reponame'"}'
 echo " done."
 
 # create empty README.md
-echo -n "Creating README ..."
+echo "Creating README ..."
 touch README.md
 echo " done."
 
 # push to remote repo
-echo -n "Pushing to remote ..."
+echo "Pushing to remote ..."
 git init
 git add -A
 git commit -m "first commit"
@@ -35,7 +35,7 @@ read -p "Do you want to open the new repo page in browser?(y/n): " answer
 
 case $answer in
   y)
-	echo -n "Opening in a browser ..."
+	echo "Opening in a browser ..."
 	open https://github.com/$username/$reponame
     ;;
   n)
@@ -50,3 +50,18 @@ curl -sL --user "${username}:${password}" https://api.github.com/user/repos -d '
 curl -sL --user "${username}:${password}" https://github.com/$account/$repo/tarball/$tag_name > tarball.tar
 
 curl -u "$username:$token" https://api.github.com/user/repos -d '{"name":"'$repo_name'"}' > /dev/null 2>&1
+
+curl -u "${username}:${password}" https://api.github.com/user/repos -d '{"name":"awesome"}'
+
+
+
+
+
+
+
+
+
+
+
+
+
