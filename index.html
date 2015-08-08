@@ -260,7 +260,22 @@ git push -u origin master
 <span class="nv">repo_name</span><span class="o">=</span><span class="sb">`</span>basename <span class="k">$(</span>git rev-parse --show-toplevel<span class="k">)</span><span class="sb">`</span>
 
 <span class="c"># list all issue</span>
-curl -i https://api.github.com/repos/KENJU/<span class="nv">$repo_name</span>/issues <span class="p">|</span> grep <span class="s1">&#39;title&#39;</span><span class="p">|</span> sed s/<span class="se">\&quot;</span>title<span class="se">\&quot;</span>://g
+curl https://api.github.com/repos/<span class="nv">$username</span>/<span class="nv">$repo_name</span>/issues &gt; issues.txt
+
+<span class="c"># extract texts</span>
+awk <span class="s1">&#39;/number/{print $2}&#39;</span> issues.txt &gt; tmp1.txt
+awk <span class="s1">&#39;/title/{result = &quot;&quot;; for(i=2;i&lt;=NF;++i) result = result &quot; &quot; $i; print result}&#39;</span> issues.txt &gt; tmp2.txt
+
+<span class="c"># formats</span>
+<span class="nb">echo</span> <span class="s2">&quot;=========================&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;No.\tTitle&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;-------------------------&quot;</span>
+paste -d<span class="s2">&quot;\t&quot;</span> tmp1.txt tmp2.txt <span class="p">|</span> tr -d <span class="se">\&quot;</span>,
+<span class="nb">echo</span> <span class="s2">&quot;=========================&quot;</span>
+
+<span class="c"># cleanup</span>
+rm tmp<span class="o">{</span>1,2<span class="o">}</span>.txt
+rm issues.txt
 </pre></div>
 
 
@@ -286,6 +301,53 @@ curl -i https://api.github.com/repos/KENJU/<span class="nv">$repo_name</span>/is
 
 
 <h4>issues_edit.sh</h4>
+<div class="codehilite"><pre><span class="c">###################</span>
+<span class="c"># edit an issue</span>
+<span class="c">###################</span>
+
+<span class="c"># POST</span>
+<span class="nb">read</span> -p <span class="s2">&quot;Do you want to edit issues? (y/n)&quot;</span> answer_edit
+<span class="k">case</span> <span class="nv">$answer_edit</span> in
+  y<span class="o">)</span>
+    <span class="c"># get issue num</span>
+    <span class="nb">read</span> -p <span class="s2">&quot;Issue Number: &quot;</span> issue_num
+
+    <span class="c"># get issue detail</span>
+    curl https://api.github.com/repos/<span class="nv">$username</span>/<span class="nv">$repo_name</span>/issues/<span class="nv">$issue_num</span> &gt; issues<span class="nv">$issue_num</span>.txt
+
+    <span class="c"># format and show detail</span>
+    <span class="s2">&quot;=========================&quot;</span>
+    grep <span class="s1">&#39;number&#39;</span> issues<span class="nv">$issue_num</span>.txt <span class="p">|</span> tr -d <span class="se">\&quot;</span>,
+    <span class="nb">echo</span> <span class="s2">&quot;-------------------------&quot;</span>
+    grep <span class="s1">&#39;state&#39;</span> issues<span class="nv">$issue_num</span>.txt <span class="p">|</span> tr -d <span class="se">\&quot;</span>,
+    grep <span class="s1">&#39;closed_at&#39;</span> issues<span class="nv">$issue_num</span>.txt <span class="p">|</span> tr -d <span class="se">\&quot;</span>,
+    grep <span class="s1">&#39;created_at&#39;</span> issues<span class="nv">$issue_num</span>.txt <span class="p">|</span> tr -d <span class="se">\&quot;</span>,
+    grep <span class="s1">&#39;updated_at&#39;</span> issues<span class="nv">$issue_num</span>.txt <span class="p">|</span> tr -d <span class="se">\&quot;</span>,
+    <span class="nb">echo</span> <span class="s2">&quot;-------------------------&quot;</span>
+    grep <span class="s1">&#39;title&#39;</span> issues<span class="nv">$issue_num</span>.txt <span class="p">|</span> tr -d <span class="se">\&quot;</span>,
+    grep <span class="s1">&#39;body&#39;</span> issues<span class="nv">$issue_num</span>.txt <span class="p">|</span> tr -d <span class="se">\&quot;</span>,
+    <span class="nb">echo</span> <span class="s2">&quot;=========================&quot;</span>
+
+    <span class="c"># get new status/title/body</span>
+    <span class="nb">read</span> -p <span class="s2">&quot;New state ( open or closed ): &quot;</span> new_state
+    <span class="nb">read</span> -p <span class="s2">&quot;New title : &quot;</span> new_title
+    <span class="nb">read</span> -p <span class="s2">&quot;New body : &quot;</span> new_body
+
+    <span class="c"># POST</span>
+    curl -u <span class="nv">$username</span> -i -H <span class="s2">&quot;Content-Type: application/json&quot;</span> -X POST --data <span class="s1">&#39;{&quot;title&quot;:&quot;&#39;</span><span class="nv">$new_title</span><span class="s1">&#39;&quot;, &quot;body&quot;:&quot;&#39;</span><span class="nv">$new_body</span><span class="s1">&#39;&quot;, &quot;state&quot;:&quot;&#39;</span><span class="nv">$new_state</span><span class="s1">&#39;&quot;}&#39;</span> https://api.github.com/repos/<span class="nv">$username</span>/<span class="nv">$repo_name</span>/issues/<span class="nv">$issue_num</span>
+
+    <span class="c"># cleanup</span>
+    rm issues<span class="nv">$issue_num</span>.txt
+
+    <span class="p">;;</span>
+  n<span class="o">)</span>
+    <span class="p">;;</span>
+  *<span class="o">)</span>
+    <span class="p">;;</span>
+<span class="k">esac</span>
+
+<span class="nb">echo</span>
+</pre></div>
         </article>
       </div>
     </div>

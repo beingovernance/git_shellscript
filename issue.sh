@@ -35,10 +35,10 @@ echo "No.\tTitle"
 echo "-------------------------"
 paste -d"\t" tmp1.txt tmp2.txt | tr -d \",
 echo "========================="
-rm tmp{1,2}.txt
 
-# curl -i https://api.github.com/repos/$username/$repo_name/issues | grep 'title'| sed s/\"title\"://g
-# curl -i https://api.github.com/repos/$username/$repo_name/issues | grep 'number'| sed s/\"number\"://g
+# cleanup
+rm tmp{1,2}.txt
+rm issues.txt
 
 ###################
 # create an issue
@@ -66,11 +66,43 @@ esac
 read -p "Do you want to edit issues? (y/n)" answer_edit
 case $answer_edit in
   y)
+	# get issue num
 	read -p "Issue Number: " issue_num
-	curl https://api.github.com/repos/$username/$repo_name/issues/$issue_num | grep 'title'| sed s/\"title\"://g
+
+	# get issue detail
+	curl https://api.github.com/repos/$username/$repo_name/issues/$issue_num > issues$issue_num.txt
+
+	# format and show detail
+	"========================="
+	grep 'number' issues$issue_num.txt | tr -d \",
+	echo "-------------------------"
+	grep 'state' issues$issue_num.txt | tr -d \",
+	grep 'closed_at' issues$issue_num.txt | tr -d \",
+	grep 'created_at' issues$issue_num.txt | tr -d \",
+	grep 'updated_at' issues$issue_num.txt | tr -d \",
+	echo "-------------------------"
+	grep 'title' issues$issue_num.txt | tr -d \",
+	grep 'body' issues$issue_num.txt | tr -d \",
+	echo "========================="
+
+	# get new status/title/body
+	read -p "New state ( open or closed ): " new_state
+	read -p "New title : " new_title
+	read -p "New body : " new_body
+
+	# POST
+	curl -u $username -i -H "Content-Type: application/json" -X POST --data '{"title":"'$new_title'", "body":"'$new_body'", "state":"'$new_state'"}' https://api.github.com/repos/$username/$repo_name/issues/$issue_num
+
+	# cleanup
+	rm issues$issue_num.txt
+
     ;;
   n)
     ;;
   *)
     ;;
 esac
+
+echo
+
+
