@@ -17,6 +17,10 @@
           <h1>Shell scripts for Git</h1>
 <h3>About</h3>
 <p>Shell scripts for manipulating your Git repository. </p>
+<ul>
+<li><a href="https://github.com/KENJU/git_shellscript">Github</a></li>
+<li><a href="http://kenju.github.io/git_shellscript/">Documentation</a></li>
+</ul>
 <h3>Usage</h3>
 <p>Download a shell script whilch you want to use into your git repository, and then add permission for executing files with below commands.</p>
 <div class="codehilite"><pre><span class="nv">$ </span>chmod u+x init.sh
@@ -29,6 +33,7 @@
 <li>commit.sh</li>
 <li>push.sh</li>
 <li>build.sh</li>
+<li>github.sh</li>
 </ul>
 <h3>init.sh</h3>
 <ul>
@@ -148,6 +153,82 @@ git checkout gh-pages
 git rebase master
 git push origin gh-pages
 git checkout master
+</pre></div>
+
+
+<h3>github.sh</h3>
+<ul>
+<li>create a new repo in Github</li>
+<li>git init yoru current directory</li>
+<li>git push to the newly created repo</li>
+</ul>
+<div class="codehilite"><pre><span class="c">#!/bin/sh</span>
+<span class="c"># </span>
+<span class="c"># github.sh</span>
+<span class="c"># - create a new repository in Github</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2015 Kenju - All Rights Reserved</span>
+<span class="c"># https://github.com/KENJU/git_shellscript </span>
+
+<span class="c"># get user name</span>
+<span class="nv">username</span><span class="o">=</span><span class="sb">`</span>git config github.user<span class="sb">`</span>
+<span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$username</span><span class="s2">&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nb">echo</span> <span class="s2">&quot;Could not find username, run &#39;git config --global github.user &lt;username&gt;&#39;&quot;</span>
+    <span class="nv">invalid_credentials</span><span class="o">=</span>1
+<span class="k">fi</span>
+
+<span class="c"># get repo name</span>
+<span class="nv">dir_name</span><span class="o">=</span><span class="sb">`</span>basename <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="sb">`</span>
+<span class="nb">read</span> -p <span class="s2">&quot;Do you want to use &#39;</span><span class="nv">$dir_name</span><span class="s2">&#39; as a repo name?(y/n)&quot;</span> answer_dirname
+<span class="k">case</span> <span class="nv">$answer_dirname</span> in
+  y<span class="o">)</span>
+    <span class="c"># use currently dir name as a repo name</span>
+    <span class="nv">reponame</span><span class="o">=</span><span class="nv">$dir_name</span>
+    <span class="p">;;</span>
+  n<span class="o">)</span>
+    <span class="nb">read</span> -p <span class="s2">&quot;Enter your new repository name: &quot;</span> reponame
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$reponame</span><span class="s2">&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nv">reponame</span><span class="o">=</span><span class="nv">$dir_name</span>
+    <span class="k">fi</span>
+    <span class="p">;;</span>
+  *<span class="o">)</span>
+    <span class="p">;;</span>
+<span class="k">esac</span>
+
+
+<span class="c"># create repo</span>
+<span class="nb">echo</span> <span class="s2">&quot;Creating Github repository &#39;</span><span class="nv">$reponame</span><span class="s2">&#39; ...&quot;</span>
+curl -u <span class="nv">$username</span> https://api.github.com/user/repos -d <span class="s1">&#39;{&quot;name&quot;:&quot;&#39;</span><span class="nv">$reponame</span><span class="s1">&#39;&quot;}&#39;</span>
+<span class="nb">echo</span> <span class="s2">&quot; done.&quot;</span>
+
+<span class="c"># create empty README.md</span>
+<span class="nb">echo</span> <span class="s2">&quot;Creating README ...&quot;</span>
+touch README.md
+<span class="nb">echo</span> <span class="s2">&quot; done.&quot;</span>
+
+<span class="c"># push to remote repo</span>
+<span class="nb">echo</span> <span class="s2">&quot;Pushing to remote ...&quot;</span>
+git init
+git add -A
+git commit -m <span class="s2">&quot;first commit&quot;</span>
+git remote rm origin
+git remote add origin https://github.com/<span class="nv">$username</span>/<span class="nv">$reponame</span>.git
+git push -u origin master
+<span class="nb">echo</span> <span class="s2">&quot; done.&quot;</span>
+
+<span class="c"># open in a browser</span>
+<span class="nb">read</span> -p <span class="s2">&quot;Do you want to open the new repo page in browser?(y/n): &quot;</span> answer_browser
+
+<span class="k">case</span> <span class="nv">$answer_browser</span> in
+  y<span class="o">)</span>
+    <span class="nb">echo</span> <span class="s2">&quot;Opening in a browser ...&quot;</span>
+    open https://github.com/<span class="nv">$username</span>/<span class="nv">$reponame</span>
+    <span class="p">;;</span>
+  n<span class="o">)</span>
+    <span class="p">;;</span>
+  *<span class="o">)</span>
+    <span class="p">;;</span>
+<span class="k">esac</span>
 </pre></div>
         </article>
       </div>

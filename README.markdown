@@ -4,6 +4,9 @@
 
 Shell scripts for manipulating your Git repository. 
 
+- [Github](https://github.com/KENJU/git_shellscript)
+- [Documentation](http://kenju.github.io/git_shellscript/)
+
 ### Usage
 
 Download a shell script whilch you want to use into your git repository, and then add permission for executing files with below commands.

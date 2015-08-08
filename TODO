@@ -1,3 +1,6 @@
+
+mv `find . -name README_*.html` index.html
+
 - list issue
 - add issue
 - delete issue
