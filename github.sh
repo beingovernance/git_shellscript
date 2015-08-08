@@ -6,17 +6,19 @@
 # Copyright (C) 2015 Kenju - All Rights Reserved
 # https://github.com/KENJU/git_shellscript 
 
-# read from command line
+# get user name
 username=`git config github.user`
 if [ "$username" = "" ]; then
 	echo "Could not find username, run 'git config --global github.user <username>'"
 	invalid_credentials=1
 fi
 
+# get repo name
 dir_name=`basename $(pwd)`
 read -p "Do you want to use '$dir_name' as a repo name?(y/n)" answer_dirname
 case $answer_dirname in
   y)
+	# use currently dir name as a repo name
 	reponame=$dir_name
     ;;
   n)
@@ -63,15 +65,6 @@ case $answer_browser in
   *)
     ;;
 esac
-
-
-curl -sL --user "${username}:${password}" https://api.github.com/user/repos -d '{"name":"awesome"}'
-
-curl -sL --user "${username}:${password}" https://github.com/$account/$repo/tarball/$tag_name > tarball.tar
-
-curl -u "$username:$token" https://api.github.com/user/repos -d '{"name":"'$repo_name'"}' > /dev/null 2>&1
-
-curl -u "${username}:${password}" https://api.github.com/user/repos -d '{"name":"awesome"}'
 
 
 
