@@ -42,6 +42,11 @@ echo "Creating README ..."
 touch README.md
 echo " done."
 
+# create empty .gitignore
+echo "Creating .gitignore ..."
+touch .gitignore
+echo " done."
+
 # push to remote repo
 echo "Pushing to remote ..."
 git init
