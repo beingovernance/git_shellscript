@@ -1,4 +1,4 @@
-#!/bin/sh
+
 # 
 # github.sh
 # - create a new repository in Github
@@ -34,7 +34,9 @@ esac
 
 # create repo
 echo "Creating Github repository '$reponame' ..."
-curl -u $username https://api.github.com/user/repos -d '{"name":"'$reponame'"}'
+read -p "Do you want to make it private?(y/n)" answer_private
+[ $answer_private == y ] && private=true || private=false
+curl -u $username https://api.github.com/user/repos -d '{"name":"'$reponame'", "private":"'$private'"}'
 echo " done."
 
 # create empty README.md
