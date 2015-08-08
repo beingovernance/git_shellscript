@@ -34,6 +34,12 @@
 <li>push.sh</li>
 <li>build.sh</li>
 <li>github.sh</li>
+<li>issue.sh<ul>
+<li>issue_list.sh</li>
+<li>issue_create.sh</li>
+<li>issue_edit.sh</li>
+</ul>
+</li>
 </ul>
 <h3>init.sh</h3>
 <ul>
@@ -230,6 +236,56 @@ git push -u origin master
     <span class="p">;;</span>
 <span class="k">esac</span>
 </pre></div>
+
+
+<h3>issue.sh</h3>
+<ul>
+<li>list all issues of your current repository</li>
+<li>add a new issue</li>
+<li>edit issues</li>
+</ul>
+<h4>issue_list.sh</h4>
+<div class="codehilite"><pre><span class="c">###################</span>
+<span class="c"># list issues</span>
+<span class="c">###################</span>
+
+<span class="c"># get user name</span>
+<span class="nv">username</span><span class="o">=</span><span class="sb">`</span>git config github.user<span class="sb">`</span>
+<span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$username</span><span class="s2">&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nb">echo</span> <span class="s2">&quot;Could not find username, run &#39;git config --global github.user &lt;username&gt;&#39;&quot;</span>
+    <span class="nv">invalid_credentials</span><span class="o">=</span>1
+<span class="k">fi</span>
+
+<span class="c"># get repository name</span>
+<span class="nv">repo_name</span><span class="o">=</span><span class="sb">`</span>basename <span class="k">$(</span>git rev-parse --show-toplevel<span class="k">)</span><span class="sb">`</span>
+
+<span class="c"># list all issue</span>
+curl -i https://api.github.com/repos/KENJU/<span class="nv">$repo_name</span>/issues <span class="p">|</span> grep <span class="s1">&#39;title&#39;</span><span class="p">|</span> sed s/<span class="se">\&quot;</span>title<span class="se">\&quot;</span>://g
+</pre></div>
+
+
+<h4>issue_create.sh</h4>
+<div class="codehilite"><pre><span class="c">###################</span>
+<span class="c"># create an issue</span>
+<span class="c">###################</span>
+
+<span class="c"># POST</span>
+<span class="nb">read</span> -p <span class="s2">&quot;Do you want to add issues? (y/n)&quot;</span> answer_add
+<span class="k">case</span> <span class="nv">$answer_add</span> in
+  y<span class="o">)</span>
+    <span class="nb">read</span> -p <span class="s2">&quot;Issue Title: &quot;</span> title
+    <span class="nb">read</span> -p <span class="s2">&quot;Issue Body: &quot;</span> body
+    curl -u <span class="nv">$username</span> -i -H <span class="s2">&quot;Content-Type: application/json&quot;</span> -X POST --data <span class="s1">&#39;{&quot;title&quot;:&quot;&#39;</span><span class="nv">$title</span><span class="s1">&#39;&quot;, &quot;body&quot;:&quot;&#39;</span><span class="nv">$body</span><span class="s1">&#39;&quot;}&#39;</span> https://api.github.com/repos/<span class="nv">$username</span>/<span class="nv">$repo_name</span>/issues
+    <span class="p">;;</span>
+  n<span class="o">)</span>
+    <span class="p">;;</span>
+  *<span class="o">)</span>
+    <span class="p">;;</span>
+<span class="k">esac</span>
+</pre></div>
+
+
+<h4>issues_edit.sh</h4>
         </article>
       </div>
     </div>
