@@ -9,8 +9,8 @@
 # get user name
 username=`git config github.user`
 if [ "$username" = "" ]; then
-	echo "Could not find username, run 'git config --global github.user <username>'"
-	invalid_credentials=1
+  echo "Could not find username, run 'git config --global github.user <username>'"
+  invalid_credentials=1
 fi
 
 # get repo name
@@ -18,14 +18,14 @@ dir_name=`basename $(pwd)`
 read -p "Do you want to use '$dir_name' as a repo name?(y/n)" answer_dirname
 case $answer_dirname in
   y)
-	# use currently dir name as a repo name
-	reponame=$dir_name
+  # use currently dir name as a repo name
+  reponame=$dir_name
     ;;
   n)
-	read -p "Enter your new repository name: " reponame
-	if [ "$reponame" = "" ]; then
-		reponame=$dir_name
-	fi
+  read -p "Enter your new repository name: " reponame
+  if [ "$reponame" = "" ]; then
+    reponame=$dir_name
+  fi
     ;;
   *)
     ;;
@@ -39,10 +39,11 @@ read -p "Do you want to make it private?(y/n)" answer_private
 read -p "Repository Description: " description
 read -p "Do you want to add MIT LICENSE template?(y/n)" answer_license
 
-[ $answer_private == y ] && private=true || private=false
-[ $answer_license == y ] && license_template="mit" || license_template="unlicense"
+[ $answer_private = "y" ] && private=true || private=false
+[ $answer_license = "y" ] && license_template="mit" || license_template="unlicense"
 
-curl -u $username https://api.github.com/user/repos -d '{"name":"'$reponame'", "description":"'$description'", "private":"'$private'", "license_template":"'$license_template'"}'
+curl -u $username -H "Content-Type: application/json" --data '{"name":"'$reponame'", "description":"'$description'", "private":"'$private'", "license_template":"'$license_template'"}' -X POST https://api.github.com/user/repos
+
 echo " done."
 
 # create empty README.md
@@ -70,8 +71,8 @@ read -p "Do you want to open the new repo page in browser?(y/n): " answer_browse
 
 case $answer_browser in
   y)
-	echo "Opening in a browser ..."
-	open https://github.com/$username/$reponame
+  echo "Opening in a browser ..."
+  open https://github.com/$username/$reponame
     ;;
   n)
     ;;
