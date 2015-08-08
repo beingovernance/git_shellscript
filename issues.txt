@@ -1,28 +1,3 @@
-HTTP/1.1 200 OK
-Server: GitHub.com
-Date: Sat, 08 Aug 2015 04:32:49 GMT
-Content-Type: application/json; charset=utf-8
-Content-Length: 10617
-Status: 200 OK
-X-RateLimit-Limit: 60
-X-RateLimit-Remaining: 38
-X-RateLimit-Reset: 1439008637
-Cache-Control: public, max-age=60, s-maxage=60
-ETag: "a3291673b9cf1e538c610b672e56cdbf"
-Vary: Accept
-X-GitHub-Media-Type: github.v3
-X-XSS-Protection: 1; mode=block
-X-Frame-Options: deny
-Content-Security-Policy: default-src 'none'
-Access-Control-Allow-Credentials: true
-Access-Control-Expose-Headers: ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
-Access-Control-Allow-Origin: *
-X-GitHub-Request-Id: 6A8A3B72:44D0:AE0F1E7:55C58671
-Strict-Transport-Security: max-age=31536000; includeSubdomains; preload
-X-Content-Type-Options: nosniff
-Vary: Accept-Encoding
-X-Served-By: 139317cebd6caf9cd03889139437f00b
-
 [
   {
     "url": "https://api.github.com/repos/KENJU/git_shellscript/issues/6",
